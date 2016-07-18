@@ -17,32 +17,31 @@
     }
 </style>
 <body>
-<script src="d3.v3.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
     // sizing information, including margins so there is space for labels, etc
-    var margin =  { top: 20, right: 20, bottom: 100, left: 200 },
+    var margin =  { top: 20, right: 20, bottom: 100, left: 20 },
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom,
         marginOverview = { top: 430, right: margin.right, bottom: 20,  left: margin.left },
         heightOverview = 500 - marginOverview.top - marginOverview.bottom;
 
     // set up a date parsing function for future use
-    var parseDate = d3.time.format("%d/%B/%Y").parse;
-    var todayDate = parseDate("11/07/2016");
+    var parseDate = d3.time.format("%d/%m/%Y").parse;
 
-    // // some colours to use for the bars
-    // var colour = d3.scale.ordinal()
-    //                     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+    // some colours to use for the bars
+    var colour = d3.scale.ordinal()
+                        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
     // mathematical scales for the x and y axes
-    var x = d3.scale.linear()
+    var x = d3.time.scale()
                     .range([0, width]);
-    var y = d3.time.scale()
+    var y = d3.scale.linear()
                     .range([height, 0]);
-    var xOverview = d3.scale.linear()
+    var xOverview = d3.time.scale()
                     .range([0, width]);
-    var yOverview = d3.time.scale()
+    var yOverview = d3.scale.linear()
                     .range([heightOverview, 0]);
 
     // rendering for the x and y axes
@@ -74,19 +73,17 @@
                         .on("brush", brushed);
 
     // setup complete, let's get some data!
-    d3.json("rfc.json", function(error, data) {
+    d3.csv("test.csv", parse, function(data) {
 
         // data ranges for the x and y axes
-        x.domain(d3.extent(Object.keys(data), function(el){return parseInt(el)}));
-
-        y.domain(d3.extent(datesFromSource(dataFromSource(data))));
-        // y.domain([parseDate("1/1/1950"), todayDate]);
+        x.domain(d3.extent(data, function(d) { return d.date; }));
+        y.domain([0, d3.max(data, function(d) { return d.total; })]);
         xOverview.domain(x.domain());
         yOverview.domain(y.domain());
 
         // data range for the bar colours
         // (essentially maps attribute names to colour values)
-        // colour.domain(d3.keys(data[0]));
+        colour.domain(d3.keys(data[0]));
 
         // draw the axes now that they are fully set up
         main.append("g")
@@ -106,30 +103,30 @@
                 .attr("class", "bars")
             // a group for each stack of bars, positioned in the correct x position
             .selectAll(".bar.stack")
-            .data(dataFromSource(data))
+            .data(data)
             .enter().append("g")
                 .attr("class", "bar stack")
-                .attr("transform", function(el) { return "translate(" + x(el.id) + ",0)"; })
+                .attr("transform", function(d) { return "translate(" + x(d.date) + ",0)"; })
             // a bar for each value in the stack, positioned in the correct y positions
             .selectAll("rect")
-            .data(function(d){return d.counts})
+            .data(function(d) { return d.counts; })
             .enter().append("rect")
                 .attr("class", "bar")
                 .attr("width", 6)
-                .attr("y", function(d) { return y(d.y1) })
-                .attr("height", function(d) { return dateDiff(d.y0, d.y1, y)})
-                .style("fill", function(d) { return d.color });
+                .attr("y", function(d) { return y(d.y1); })
+                .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+                .style("fill", function(d) { return colour(d.name); });
 
         overview.append("g")
                     .attr("class", "bars")
             .selectAll(".bar")
-            .data(dataFromSource(data))
+            .data(data)
             .enter().append("rect")
                 .attr("class", "bar")
-                .attr("x", function(d) { return xOverview(d.id)})
+                .attr("x", function(d) { return xOverview(d.date) - 3; })
                 .attr("width", 6)
-                .attr("y", function(d) { return yOverview(parseDate("01/July/2016")) })
-                .attr("height", function(d) { return yOverview(d.date) - yOverview(parseDate("18/July/2016")) });
+                .attr("y", function(d) { return yOverview(d.total); })
+                .attr("height", function(d) { return heightOverview - yOverview(d.total); });
 
         // add the brush target area on the overview chart
         overview.append("g")
@@ -145,42 +142,22 @@
 
     });
 
-    function dateFromRFC(el) {
-        return parseDate("01/"+ el['issue_data']['month'] + '/' + el['issue_data']['year'])
-    }
+    // by habit, cleaning/parsing the data and return a new object to ensure/clarify data object structure
+    function parse(d) {
+        var value = { date: parseDate(d.date) }; // turn the date string into a date object
 
-    function dataFromSource(data){
-        keys = Object.keys(data)
-        var rfcs = []
-        for (key in keys){
-            el = data[keys[key]];
-            if (el != "Not Issued") {
-                rfcs.push({
-                    date: dateFromRFC(el),
-                    id: keys[key],
-                    counts: [
-                        {name: '7200', y0: dateFromRFC(el), y1: parseDate("01/July/2013"), color: "#cc0000"},
-                        {name: '0001', y0: parseDate("01/July/2013"), y1: parseDate("18/July/2016"), color: "#d0743c"}
-
-                    ]
-                })
-            }
-        }
-        return rfcs;
-    }
-
-
-    function datesFromSource(data){
-        var dates = []
-        for (var el in data) {
-          dates.push(data[el].date);
-        }
-        return dates;
-    }
-
-
-    function dateDiff(d1, d2, yScale){
-        return yScale(d1) - yScale(d2)
+        // adding calculated data to each count in preparation for stacking
+        var y0 = 0; // keeps track of where the "previous" value "ended"
+        value.counts = ["count", "count2", "count3"].map(function(name) {
+            return { name: name,
+                     y0: y0,
+                     // add this count on to the previous "end" to create a range, and update the "previous end" for the next iteration
+                     y1: y0 += +d[name]
+                   };
+        });
+        // quick way to get the total from the previous calculations
+        value.total = value.counts[value.counts.length - 1].y1;
+        return value;
     }
 
     // zooming/panning behaviour for overview chart
@@ -189,7 +166,7 @@
         x.domain(brush.empty() ? xOverview.domain() : brush.extent());
         // redraw the bars on the main chart
         main.selectAll(".bar.stack")
-                .attr("transform", function(d) { return "translate(" + x(d.id) + ",0)"; })
+                .attr("transform", function(d) { return "translate(" + x(d.date) + ",0)"; })
         // redraw the x axis of the main chart
         main.select(".x.axis").call(xAxis);
     }

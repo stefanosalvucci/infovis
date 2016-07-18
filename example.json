@@ -3,7 +3,7 @@
     "status": "PROPOSED STANDARD",
     "doi": "10.17487/RFC5988",
     "issue_data": {
-      "year": "2010",
+      "year": "1981",
       "month": "October"
     },
     "format": "TXT=46834 bytes",
@@ -34,12 +34,12 @@
       "5988"
     ]
   },
-  "5970": {
+  "7200": {
     "status": "PROPOSED STANDARD",
     "doi": "10.17487/RFC5989",
     "issue_data": {
-      "year": "2010",
-      "month": "October"
+      "year": "1950",
+      "month": "January"
     },
     "format": "TXT=40571 bytes",
     "title": "A SIP Event Package for Subscribing to Changes to an HTTP Resource",
@@ -47,12 +47,12 @@
       "A.B. Roach"
     ]
   },
-  "5100": {
+  "0001": {
     "status": "PROPOSED STANDARD",
     "doi": "10.17487/RFC5989",
     "issue_data": {
-      "year": "2010",
-      "month": "October"
+      "year": "2012",
+      "month": "January"
     },
     "format": "TXT=40571 bytes",
     "title": "A SIP Event Package for Subscribing to Changes to an HTTP Resource",
