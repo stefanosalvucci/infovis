@@ -73,7 +73,7 @@
                         .on("brush", brushed);
 
     // setup complete, let's get some data!
-    d3.csv("https://raw.githubusercontent.com/stefanosalvucci/infovis/master/test.csv", parse, function(data) {
+    d3.csv("test.csv", parse, function(data) {
 
         // data ranges for the x and y axes
         x.domain(d3.extent(data, function(d) { return d.date; }));
