@@ -128,8 +128,8 @@
                 .attr("class", "bar")
                 .attr("x", function(d) { return xOverview(d.id)})
                 .attr("width", 6)
-                .attr("y", function(d) { return yOverview(parseDate("01/July/2016")) })
-                .attr("height", function(d) { return yOverview(d.date) - yOverview(parseDate("18/July/2016")) });
+                .attr("y", function(d) { return yOverview(todayDate) })
+                .attr("height", function(d) { return yOverview(d.date) - yOverview(todayDate) });
 
         // add the brush target area on the overview chart
         overview.append("g")
@@ -150,23 +150,39 @@
     }
 
     function dataFromSource(data){
-        keys = Object.keys(data)
-        var rfcs = []
+        keys = Object.keys(data);
+        var rfcs = [];
         for (key in keys){
             el = data[keys[key]];
-            if (el != "Not Issued") {
+            if (el != "Not Issued" && el.obsolets == null) {
                 rfcs.push({
                     date: dateFromRFC(el),
                     id: keys[key],
-                    counts: [
-                        {name: '7200', y0: dateFromRFC(el), y1: parseDate("01/July/2013"), color: "#cc0000"},
-                        {name: '0001', y0: parseDate("01/July/2013"), y1: parseDate("18/July/2016"), color: "#d0743c"}
-
-                    ]
-                })
+                    counts: countsCalculator(key, el, data)
+                });
             }
         }
         return rfcs;
+    }
+
+    function countsCalculator(key, el, data){
+        last_count = { name: key, y0: dateFromRFC(el), y1: todayDate, color: "#cc0000" }
+        counts = [ last_count ];
+        if (el.obsoleted_by != null) {
+            for (var i = 0; i < el.obsoleted_by.length; i++) {
+                var obs = el.obsoleted_by[i].replace("RFC", "").replace("RTR", "");
+                if (data[obs] != null) {
+                    var new_el = data[obs];
+                    var new_date = dateFromRFC(new_el);
+                    last_count.y1 = new_date,
+                    last_count = { name: obs, y0: new_date, y1: todayDate, color: "#cc0000"};
+                    counts.push(last_count);
+                } else{
+                    console.log(obs);
+                }
+            }
+        }
+        return counts;
     }
 
 

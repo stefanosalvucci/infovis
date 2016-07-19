@@ -2348,6 +2348,48 @@
       "RFC1661"
     ]
   },
+  "1083": {
+    "status": "UNKNOWN",
+    "doi": "10.17487/RFC1084",
+    "issue_data": {
+      "year": "1988",
+      "month": "December"
+    },
+    "format": "TXT=16327 bytes",
+    "title": "IAB official protocol standards. Defense Advanced Research Projects Agency, Internet Activities Board. December 1988. (Format: TXT=27128 bytes) (Obsoleted by RFC1100) (Status: HISTORIC) (DOI: 10.17487/RFC1083) 1084 BOOTP vendor information extensions",
+    "authors": [
+      "J.K. Reynolds"
+    ],
+    "obsolets": [
+      "RFC1048"
+    ],
+    "obsoleted_by": [
+      "RFC1395",
+      "RFC1497",
+      "RFC1533"
+    ]
+  },
+  "1084": {
+    "status": "UNKNOWN",
+    "authors": [
+      "J.K. Reynolds"
+    ],
+    "doi": "10.17487/RFC1084",
+    "obsolets": [
+      "RFC1048"
+    ],
+    "issue_data": {
+      "month": "December",
+      "year": "1988"
+    },
+    "format": "TXT=16327 bytes",
+    "title": "BOOTP vendor information extensions",
+    "obsoleted_by": [
+      "RFC1395",
+      "RFC1497",
+      "RFC1533"
+    ]
+  },
   "5618": {
     "status": "PROPOSED STANDARD",
     "doi": "10.17487/RFC5618",
@@ -4014,6 +4056,24 @@
     "title": "Initial Hypertext Transfer Protocol (HTTP) Method Registrations",
     "authors": [
       "J. Reschke"
+    ]
+  },
+  "7942": {
+    "also_fyi": "BCP0205",
+    "status": "BEST CURRENT PRACTICE",
+    "doi": "10.17487/RFC7942",
+    "issue_data": {
+      "year": "2016",
+      "month": "July"
+    },
+    "format": "TXT=17273 bytes",
+    "title": "Improving Awareness of Running Code: The Implementation Status Section",
+    "authors": [
+      "Y. Sheffer",
+      "A. Farrel"
+    ],
+    "obsolets": [
+      "RFC6982"
     ]
   },
   "7238": {
@@ -9239,6 +9299,24 @@
       "RFC6145"
     ]
   },
+  "7909": {
+    "status": "PROPOSED STANDARD",
+    "doi": "10.17487/RFC7909",
+    "issue_data": {
+      "year": "2016",
+      "month": "June"
+    },
+    "format": "TXT=30493 bytes",
+    "title": "Securing Routing Policy Specification Language (RPSL) Objects with Resource Public Key Infrastructure (RPKI) Signatures",
+    "updates": [
+      "RFC2622",
+      "RFC4012"
+    ],
+    "authors": [
+      "R. Kisteleki",
+      "B. Haberman"
+    ]
+  },
   "7901": {
     "status": "EXPERIMENTAL",
     "doi": "10.17487/RFC7901",
@@ -11858,6 +11936,21 @@
     "authors": [
       "W. Mills",
       "M. Kucherawy"
+    ]
+  },
+  "7922": {
+    "status": "INFORMATIONAL",
+    "doi": "10.17487/RFC7922",
+    "issue_data": {
+      "year": "2016",
+      "month": "June"
+    },
+    "format": "TXT=36070 bytes",
+    "title": "Interface to the Routing System (I2RS) Traceability: Framework and Information Model",
+    "authors": [
+      "J. Clarke",
+      "G. Salgueiro",
+      "C. Pignataro"
     ]
   },
   "7295": {
@@ -17365,7 +17458,8 @@
     "status": "PROPOSED STANDARD",
     "doi": "10.17487/RFC5880",
     "updated_by": [
-      "RFC7419"
+      "RFC7419",
+      "RFC7880"
     ],
     "issue_data": {
       "year": "2010",
@@ -24723,6 +24817,9 @@
     "authors": [
       "Y. Sheffer",
       "A. Farrel"
+    ],
+    "obsoleted_by": [
+      "RFC7942"
     ]
   },
   "6981": {
@@ -42199,6 +42296,53 @@
       "N. Bisht"
     ]
   },
+  "7881": {
+    "status": "PROPOSED STANDARD",
+    "doi": "10.17487/RFC7881",
+    "issue_data": {
+      "year": "2016",
+      "month": "July"
+    },
+    "format": "TXT=16352 bytes",
+    "title": "Seamless Bidirectional Forwarding Detection (S-BFD) for IPv4, IPv6, and MPLS",
+    "authors": [
+      "C. Pignataro",
+      "D. Ward",
+      "N. Akiya"
+    ]
+  },
+  "7883": {
+    "status": "PROPOSED STANDARD",
+    "doi": "10.17487/RFC7883",
+    "issue_data": {
+      "year": "2016",
+      "month": "July"
+    },
+    "format": "TXT=9331 bytes",
+    "title": "Advertising Seamless Bidirectional Forwarding Detection (S-BFD) Discriminators in IS-IS",
+    "authors": [
+      "L. Ginsberg",
+      "N. Akiya",
+      "M. Chen"
+    ]
+  },
+  "7885": {
+    "status": "PROPOSED STANDARD",
+    "doi": "10.17487/RFC7885",
+    "issue_data": {
+      "year": "2016",
+      "month": "July"
+    },
+    "format": "TXT=22500 bytes",
+    "title": "Seamless Bidirectional Forwarding Detection (S-BFD) for Virtual Circuit Connectivity Verification (VCCV)",
+    "updates": [
+      "RFC5885"
+    ],
+    "authors": [
+      "V. Govindan",
+      "C. Pignataro"
+    ]
+  },
   "7887": {
     "status": "PROPOSED STANDARD",
     "doi": "10.17487/RFC7887",
@@ -42215,6 +42359,20 @@
       "S. Venaas",
       "J. Arango",
       "I. Kouvelas"
+    ]
+  },
+  "7886": {
+    "status": "PROPOSED STANDARD",
+    "doi": "10.17487/RFC7886",
+    "issue_data": {
+      "year": "2016",
+      "month": "July"
+    },
+    "format": "TXT=10878 bytes",
+    "title": "Advertising Seamless Bidirectional Forwarding Detection (S-BFD) Discriminators in the Layer Two Tunneling Protocol Version 3 (L2TPv3)",
+    "authors": [
+      "V. Govindan",
+      "C. Pignataro"
     ]
   },
   "7265": {
@@ -56198,27 +56356,6 @@
       "M.T. Rose"
     ]
   },
-  "1083": {
-    "status": "UNKNOWN",
-    "doi": "10.17487/RFC1084",
-    "issue_data": {
-      "year": "1988",
-      "month": "December"
-    },
-    "format": "TXT=16327 bytes",
-    "title": "IAB official protocol standards. Defense Advanced Research Projects Agency, Internet Activities Board. December 1988. (Format: TXT=27128 bytes) (Obsoleted by RFC1100) (Status: HISTORIC) (DOI: 10.17487/RFC1083) 1084 BOOTP vendor information extensions",
-    "authors": [
-      "J.K. Reynolds"
-    ],
-    "obsolets": [
-      "RFC1048"
-    ],
-    "obsoleted_by": [
-      "RFC1395",
-      "RFC1497",
-      "RFC1533"
-    ]
-  },
   "1082": {
     "status": "UNKNOWN",
     "doi": "10.17487/RFC1082",
@@ -68796,6 +68933,19 @@
       "RFC3513"
     ]
   },
+  "7816": {
+    "status": "EXPERIMENTAL",
+    "doi": "10.17487/RFC7816",
+    "issue_data": {
+      "year": "2016",
+      "month": "March"
+    },
+    "format": "TXT=23941 bytes",
+    "title": "DNS Query Name Minimisation to Improve Privacy",
+    "authors": [
+      "S. Bortzmeyer"
+    ]
+  },
   "7817": {
     "status": "PROPOSED STANDARD",
     "doi": "10.17487/RFC7817",
@@ -77142,6 +77292,21 @@
       "D. Crocker"
     ]
   },
+  "7895": {
+    "status": "PROPOSED STANDARD",
+    "doi": "10.17487/RFC7895",
+    "issue_data": {
+      "year": "2016",
+      "month": "June"
+    },
+    "format": "TXT=24164 bytes",
+    "title": "YANG Module Library",
+    "authors": [
+      "A. Bierman",
+      "M. Bjorklund",
+      "K. Watsen"
+    ]
+  },
   "3340": {
     "status": "HISTORIC",
     "doi": "10.17487/RFC3340",
@@ -83145,6 +83310,21 @@
     "authors": [
       "T. Clausen",
       "C. Dearlove"
+    ]
+  },
+  "7923": {
+    "status": "INFORMATIONAL",
+    "doi": "10.17487/RFC7923",
+    "issue_data": {
+      "year": "2016",
+      "month": "June"
+    },
+    "format": "TXT=37630 bytes",
+    "title": "Requirements for Subscription to YANG Datastores",
+    "authors": [
+      "E. Voit",
+      "A. Clemm",
+      "A. Gonzalez Prieto"
     ]
   },
   "5490": {
