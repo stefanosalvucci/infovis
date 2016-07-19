@@ -54,7 +54,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+        <h4 class="modal-title" id="myModalLabel">RFC Details</h4>
       </div>
       <div id="modal-inner-html" class="modal-body">
 
@@ -187,6 +187,7 @@
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide)
             .on('click', function(d){
+                $('#modal-inner-html').html('<a target="_blank" href="https://tools.ietf.org/html/rfc' + d.name + '">' + d.title + '</a>');
                 $('#rfc-details').modal('show');
             })
 
@@ -264,7 +265,7 @@
     }
 
     function countsCalculator(key, el, data){
-        var last_count = { name: key, y0: dateFromRFC(el), y1: maxRfcReleaseDate, color: "008125" }
+        var last_count = { name: key, y0: dateFromRFC(el), y1: maxRfcReleaseDate, color: "008125", title: titleFromRFC(el) }
         var counts = [ last_count ];
         if (el.obsoleted_by != null) {
             var countsLength = el.obsoleted_by.length;
@@ -284,11 +285,15 @@
                 var new_el = data[obs];
                 var new_date = dateFromRFC(new_el);
                 last_count.y1 = new_date;
-                last_count = { name: obs, y0: new_date, y1: maxRfcReleaseDate, color: colorScale[i+1]};
+                last_count = { name: obs, y0: new_date, y1: maxRfcReleaseDate, color: colorScale[i+1], title: titleFromRFC(new_el)};
                 counts.push(last_count);
             }
         }
         return counts;
+    }
+
+    function titleFromRFC(el){
+        return el['title'];
     }
 
     function createColorScale(length){
