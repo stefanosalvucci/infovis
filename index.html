@@ -156,8 +156,8 @@
             el = data[keys[key]];
             if (el != "Not Issued" && el.obsolets == null) {
                 rfcs.push({
-                    date: dateFromRFC(el),
                     id: keys[key],
+                    date: dateFromRFC(el),
                     counts: countsCalculator(key, el, data)
                 });
             }
@@ -166,16 +166,19 @@
     }
 
     function countsCalculator(key, el, data){
-        last_count = { name: key, y0: dateFromRFC(el), y1: todayDate, color: "#cc0000" }
+        last_count = { name: key, y0: dateFromRFC(el), y1: todayDate, color: "8BEE97" }
         counts = [ last_count ];
         if (el.obsoleted_by != null) {
-            for (var i = 0; i < el.obsoleted_by.length; i++) {
-                var obs = el.obsoleted_by[i].replace("RFC", "").replace("RTR", "");
+            countsLength = el.obsoleted_by.length;
+            var colorScale = createColorScale(countsLength+1);
+            last_count.color = colorScale[0];
+            for (var i = 0; i < countsLength; i++) {
+                var obs =  el.obsoleted_by[i].replace("RFC", "").replace("RTR", "");
                 if (data[obs] != null) {
                     var new_el = data[obs];
                     var new_date = dateFromRFC(new_el);
                     last_count.y1 = new_date,
-                    last_count = { name: obs, y0: new_date, y1: todayDate, color: "#cc0000"};
+                    last_count = { name: obs, y0: new_date, y1: todayDate, color: colorScale[i+1]};
                     counts.push(last_count);
                 } else{
                     console.log(obs);
@@ -183,6 +186,25 @@
             }
         }
         return counts;
+    }
+
+    function createColorScale(length){
+        color = ["FF0018"]; //red
+        if (length==3){
+            color.push("FFD953");
+        }
+        if (length==4) {
+            color.push("FFA93F");
+            color.push("DEF960");
+        }
+        if (length==5) {
+            color.push("FF5B25");
+            color.push("FFD953");
+            color.push("D1F661");
+        }
+        color.push("8BEE97"); //green
+
+        return color;
     }
 
 
