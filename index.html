@@ -81,11 +81,11 @@
         })
 
     // sizing information, including margins so there is space for labels, etc
-    var margin =  { top: 40, right: 0, bottom: 100, left: 40 },
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom,
-        marginOverview = { top: 430, right: margin.right, bottom: 20,  left: margin.left },
-        heightOverview = 500 - marginOverview.top - marginOverview.bottom;
+    var margin =  { top: 100, right: 0, bottom: 250, left: 40 },
+        width = 1260 - margin.left - margin.right,
+        height = 800 - margin.top - margin.bottom,
+        marginOverview = { top: 570, right: margin.right, bottom: 20,  left: margin.left },
+        heightOverview = 100;
 
     // set up a date parsing function for future use
     var parseDate = d3.time.format("%d/%B/%Y").parse;
