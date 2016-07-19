@@ -46,8 +46,31 @@
     }
 </style>
 <body>
+
+<div class="modal fade" id="rfc-details" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div id="modal-inner-html" class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="jquery-2.2.4.min.js"></script>
+<script src="bootstrap.min.js"></script>
 <script src="d3.v3.min.js"></script>
 <script src="d3.tip.v0.6.3.js"></script>
+<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 <script>
 
     var tip = d3.tip()
@@ -160,6 +183,9 @@
                 .style("fill", function(d) { return d.color })
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide)
+            .on('click', function(d){
+                $('#rfc-details').modal('show');
+            })
 
         overview.append("g")
                     .attr("class", "bars")
