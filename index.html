@@ -74,14 +74,14 @@
 <script>
 
     var tip = d3.tip()
-      .attr('class', 'd3-tip')
-      .offset([-10, 0])
-      .html(function(d) {
-        return "<strong>RFC:</strong> <span style='color:red'>"+ d.name +"</span>";
-    })
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
+            return "<strong>RFC:</strong> <span style='color:#"+d.color+"'>"+ d.name +"</span>";
+        })
 
     // sizing information, including margins so there is space for labels, etc
-    var margin =  { top: 20, right: 0, bottom: 100, left: 20 },
+    var margin =  { top: 40, right: 0, bottom: 100, left: 40 },
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom,
         marginOverview = { top: 430, right: margin.right, bottom: 20,  left: margin.left },
@@ -89,6 +89,7 @@
 
     // set up a date parsing function for future use
     var parseDate = d3.time.format("%d/%B/%Y").parse;
+    var maxRfcReleaseDate;
 
     // // some colours to use for the bars
     // var colour = d3.scale.ordinal()
@@ -137,11 +138,13 @@
     // setup complete, let's get some data!
     d3.json("rfc.json", function(error, data) {
 
+        maxRfcReleaseDate = maxDate(data);
+
         // data ranges for the x and y axes
         x.domain(d3.extent(Object.keys(data), function(el){return parseInt(el)}));
 
         y.domain(d3.extent(datesFromSource(dataFromSource(data))));
-        // y.domain([parseDate("1/1/1950"), todayDate()]);
+        // y.domain([parseDate("1/1/1950"), maxRfcReleaseDate]);
         xOverview.domain(x.domain());
         yOverview.domain(y.domain());
 
@@ -195,8 +198,8 @@
                 .attr("class", "bar")
                 .attr("x", function(d) { return xOverview(d.id)})
                 .attr("width", 6)
-                .attr("y", function(d) { return yOverview(todayDate()) })
-                .attr("height", function(d) { return dateDiff(d.id , d.date, todayDate(), yOverview) });
+                .attr("y", function(d) { return yOverview(maxRfcReleaseDate) })
+                .attr("height", function(d) { return dateDiff(d.id , d.date, maxRfcReleaseDate, yOverview) });
 
         // add the brush target area on the overview chart
         overview.append("g")
@@ -212,7 +215,20 @@
 
     });
 
-    function todayDate() { return parseDate("1/July/2016") };
+    function maxDate(data) {
+        var max = parseDate("1/July/1900");
+        keys = Object.keys(data);
+        for (key in keys){
+            el = data[keys[key]];
+            if (el != "Not Issued") {
+                currentDate = dateFromRFC(el);
+                if (max < currentDate){
+                    max = currentDate;
+                }
+            }
+        }
+        return max;
+    };
 
     function dateFromRFC(el) {
         return parseDate("01/"+ el['issue_data']['month'] + '/' + el['issue_data']['year'])
@@ -244,19 +260,13 @@
 
     function dateDiff(id, d1, d2, yScale){
         var result =  yScale(d1) - yScale(d2);
-        if (result<0) {
-            console.log(id);
-            console.log(d1);
-            console.log(d2);
-        }
         return result;
     }
 
     function countsCalculator(key, el, data){
-        var last_count = { name: key, y0: dateFromRFC(el), y1: todayDate(), color: "8BEE97" }
+        var last_count = { name: key, y0: dateFromRFC(el), y1: maxRfcReleaseDate, color: "008125" }
         var counts = [ last_count ];
         if (el.obsoleted_by != null) {
-            if (key == "849"){console.log(el)}
             var countsLength = el.obsoleted_by.length;
             var colorScale = createColorScale(countsLength+1);
             last_count.color = colorScale[0];
@@ -274,7 +284,7 @@
                 var new_el = data[obs];
                 var new_date = dateFromRFC(new_el);
                 last_count.y1 = new_date;
-                last_count = { name: obs, y0: new_date, y1: todayDate(), color: colorScale[i+1]};
+                last_count = { name: obs, y0: new_date, y1: maxRfcReleaseDate, color: colorScale[i+1]};
                 counts.push(last_count);
             }
         }
@@ -282,33 +292,33 @@
     }
 
     function createColorScale(length){
-        color = ["FF0018"]; //red
+        color = ["FF0718"]; //red
         if (length==3){
-            color.push("FFD953");
+            color.push("FDFC56");
         }
         if (length==4) {
-            color.push("FFA93F");
-            color.push("DEF960");
+            color.push("FFD248");
+            color.push("CEE64C");
         }
         if (length==5) {
-            color.push("FF5B25");
-            color.push("FFD953");
-            color.push("D1F661");
+            color.push("FF8931");
+            color.push("FDFC56");
+            color.push("A6D345");
         }
         if (length==6) {
-            color.push("FF5B25");
-            color.push("FF5B25");
-            color.push("FFD953");
-            color.push("D1F661");
+            color.push("BBDD49");
+            color.push("EEF553");
+            color.push("FFE84F");
+            color.push("FFCA45");
         }
         if (length==7) {
-            color.push("FF5B25");
-            color.push("FF5B25");
-            color.push("FFD953");
-            color.push("FFD953");
-            color.push("D1F661");
+            color.push("FFAE3C");
+            color.push("FFDB4B");
+            color.push("FDFC56");
+            color.push("E1F050");
+            color.push("ABD646");
         }
-        color.push("8BEE97"); //green
+        color.push("008125"); //green
 
         return color;
     }
