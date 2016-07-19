@@ -29,7 +29,6 @@
 
     // set up a date parsing function for future use
     var parseDate = d3.time.format("%d/%B/%Y").parse;
-    var todayDate = parseDate("11/07/2016");
 
     // // some colours to use for the bars
     // var colour = d3.scale.ordinal()
@@ -80,7 +79,7 @@
         x.domain(d3.extent(Object.keys(data), function(el){return parseInt(el)}));
 
         y.domain(d3.extent(datesFromSource(dataFromSource(data))));
-        // y.domain([parseDate("1/1/1950"), todayDate]);
+        // y.domain([parseDate("1/1/1950"), todayDate()]);
         xOverview.domain(x.domain());
         yOverview.domain(y.domain());
 
@@ -109,6 +108,7 @@
             .data(dataFromSource(data))
             .enter().append("g")
                 .attr("class", "bar stack")
+                .attr("id", function(el) {return el.id})
                 .attr("transform", function(el) { return "translate(" + x(el.id) + ",0)"; })
             // a bar for each value in the stack, positioned in the correct y positions
             .selectAll("rect")
@@ -117,7 +117,7 @@
                 .attr("class", "bar")
                 .attr("width", 6)
                 .attr("y", function(d) { return y(d.y1) })
-                .attr("height", function(d) { return dateDiff(d.y0, d.y1, y)})
+                .attr("height", function(d) { return dateDiff(d.name, d.y0, d.y1, y)})
                 .style("fill", function(d) { return d.color });
 
         overview.append("g")
@@ -128,8 +128,8 @@
                 .attr("class", "bar")
                 .attr("x", function(d) { return xOverview(d.id)})
                 .attr("width", 6)
-                .attr("y", function(d) { return yOverview(todayDate) })
-                .attr("height", function(d) { return yOverview(d.date) - yOverview(todayDate) });
+                .attr("y", function(d) { return yOverview(todayDate()) })
+                .attr("height", function(d) { return dateDiff(d.id , d.date, todayDate(), yOverview) });
 
         // add the brush target area on the overview chart
         overview.append("g")
@@ -145,8 +145,18 @@
 
     });
 
+    function todayDate() { return parseDate("1/July/2016") };
+
     function dateFromRFC(el) {
         return parseDate("01/"+ el['issue_data']['month'] + '/' + el['issue_data']['year'])
+    }
+
+    function datesFromSource(data){
+        var dates = []
+        for (var el in data) {
+          dates.push(data[el].date);
+        }
+        return dates;
     }
 
     function dataFromSource(data){
@@ -165,24 +175,26 @@
         return rfcs;
     }
 
+    function dateDiff(id, d1, d2, yScale){
+        var result =  yScale(d1) - yScale(d2);
+        if (result<0) { console.log(id); }
+        return result;
+    }
+
     function countsCalculator(key, el, data){
-        last_count = { name: key, y0: dateFromRFC(el), y1: todayDate, color: "8BEE97" }
-        counts = [ last_count ];
+        var last_count = { name: key, y0: dateFromRFC(el), y1: todayDate(), color: "8BEE97" }
+        var counts = [ last_count ];
         if (el.obsoleted_by != null) {
-            countsLength = el.obsoleted_by.length;
+            var countsLength = el.obsoleted_by.length;
             var colorScale = createColorScale(countsLength+1);
             last_count.color = colorScale[0];
             for (var i = 0; i < countsLength; i++) {
-                var obs =  el.obsoleted_by[i].replace("RFC", "").replace("RTR", "");
-                if (data[obs] != null) {
-                    var new_el = data[obs];
-                    var new_date = dateFromRFC(new_el);
-                    last_count.y1 = new_date,
-                    last_count = { name: obs, y0: new_date, y1: todayDate, color: colorScale[i+1]};
-                    counts.push(last_count);
-                } else{
-                    console.log(obs);
-                }
+                var obs =  el.obsoleted_by[i].replace("RFC", "");
+                var new_el = data[obs];
+                var new_date = dateFromRFC(new_el);
+                last_count.y1 = new_date;
+                last_count = { name: obs, y0: new_date, y1: todayDate(), color: colorScale[i+1]};
+                counts.push(last_count);
             }
         }
         return counts;
@@ -202,23 +214,22 @@
             color.push("FFD953");
             color.push("D1F661");
         }
+        if (length==6) {
+            color.push("FF5B25");
+            color.push("FF5B25");
+            color.push("FFD953");
+            color.push("D1F661");
+        }
+        if (length==7) {
+            color.push("FF5B25");
+            color.push("FF5B25");
+            color.push("FFD953");
+            color.push("FFD953");
+            color.push("D1F661");
+        }
         color.push("8BEE97"); //green
 
         return color;
-    }
-
-
-    function datesFromSource(data){
-        var dates = []
-        for (var el in data) {
-          dates.push(data[el].date);
-        }
-        return dates;
-    }
-
-
-    function dateDiff(d1, d2, yScale){
-        return yScale(d1) - yScale(d2)
     }
 
     // zooming/panning behaviour for overview chart
