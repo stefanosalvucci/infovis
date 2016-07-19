@@ -16,10 +16,6 @@ var margin =  { top: 100, right: 0, bottom: 250, left: 40 },
 var parseDate = d3.time.format("%d/%B/%Y").parse;
 var maxRfcReleaseDate;
 
-// // some colours to use for the bars
-// var colour = d3.scale.ordinal()
-//                     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
 // mathematical scales for the x and y axes
 var x = d3.scale.linear()
                 .range([0, width]);
@@ -73,9 +69,31 @@ d3.json("source/rfc.json", function(error, data) {
     xOverview.domain(x.domain());
     yOverview.domain(y.domain());
 
-    // data range for the bar colours
-    // (essentially maps attribute names to colour values)
-    // colour.domain(d3.keys(data[0]));
+    // draw the bars
+    main.append("svg").append("g")
+            .attr("class", "bars")
+            // a group for each stack of bars, positioned in the correct x position
+            .selectAll(".bar.stack")
+              .data(dataFromSource(data))
+              .enter().append("g")
+                .attr("class", "bar stack")
+                .attr("id", function(el) {return el.id})
+                .attr("transform", function(el) { return "translate(" + x(el.id) + ",0)"; })
+            // a bar for each value in the stack, positioned in the correct y positions
+            .selectAll("rect")
+              .data(function(d){return d.counts})
+              .enter().append("rect")
+                .attr("class", "bar")
+                .attr("width", 6)
+                .attr("y", function(d) { return y(d.y1) })
+                .attr("height", function(d) { return dateDiff(d.name, d.y0, d.y1, y)})
+                .style("fill", function(d) { return d.color })
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide)
+                .on('click', function(d){
+                  $('#modal-inner-html').html('<a target="_blank" href="https://tools.ietf.org/html/rfc' + d.name + '">' + d.title + '</a>');
+                  $('#rfc-details').modal('show');
+                })
 
     // draw the axes now that they are fully set up
     main.append("g")
@@ -90,54 +108,28 @@ d3.json("source/rfc.json", function(error, data) {
         .attr("transform", "translate(0," + heightOverview + ")")
         .call(xAxisOverview);
 
-    // draw the bars
-    main.append("g")
-        .attr("class", "bars")
-        // a group for each stack of bars, positioned in the correct x position
-        .selectAll(".bar.stack")
-        .data(dataFromSource(data))
-        .enter().append("g")
-            .attr("class", "bar stack")
-            .attr("id", function(el) {return el.id})
-            .attr("transform", function(el) { return "translate(" + x(el.id) + ",0)"; })
-        // a bar for each value in the stack, positioned in the correct y positions
-        .selectAll("rect")
-        .data(function(d){return d.counts})
-        .enter().append("rect")
-            .attr("class", "bar")
-            .attr("width", 6)
-            .attr("y", function(d) { return y(d.y1) })
-            .attr("height", function(d) { return dateDiff(d.name, d.y0, d.y1, y)})
-            .style("fill", function(d) { return d.color })
-        .on('mouseover', tip.show)
-        .on('mouseout', tip.hide)
-        .on('click', function(d){
-            $('#modal-inner-html').html('<a target="_blank" href="https://tools.ietf.org/html/rfc' + d.name + '">' + d.title + '</a>');
-            $('#rfc-details').modal('show');
-        })
-
     overview.append("g")
-                .attr("class", "bars")
-        .selectAll(".bar")
-        .data(dataFromSource(data))
-        .enter().append("rect")
-            .attr("class", "bar")
-            .attr("x", function(d) { return xOverview(d.id)})
-            .attr("width", 6)
-            .attr("y", function(d) { return yOverview(maxRfcReleaseDate) })
-            .attr("height", function(d) { return dateDiff(d.id , d.date, maxRfcReleaseDate, yOverview) });
+            .attr("class", "bars")
+            .selectAll(".bar")
+              .data(dataFromSource(data))
+              .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d) { return xOverview(d.id)})
+                .attr("width", 6)
+                .attr("y", function(d) { return yOverview(maxRfcReleaseDate) })
+                .attr("height", function(d) { return dateDiff(d.id , d.date, maxRfcReleaseDate, yOverview) });
 
     // add the brush target area on the overview chart
     overview.append("g")
-                .attr("class", "x brush")
-                .call(brush)
-                .selectAll("rect")
-                    // -6 is magic number to offset positions for styling/interaction to feel right
-                    .attr("y", -6)
-                    // need to manually set the height because the brush has
-                    // no y scale, i.e. we should see the extent being marked
-                    // over the full height of the overview chart
-                    .attr("height", heightOverview + 7);  // +7 is magic number for styling
+            .attr("class", "x brush")
+            .call(brush)
+            .selectAll("rect")
+              // -6 is magic number to offset positions for styling/interaction to feel right
+              .attr("y", -6)
+              // need to manually set the height because the brush has
+              // no y scale, i.e. we should see the extent being marked
+              // over the full height of the overview chart
+              .attr("height", heightOverview + 7);  // +7 is magic number for styling
 
 });
 

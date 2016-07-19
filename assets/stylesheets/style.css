@@ -41,3 +41,8 @@
   top: 100%;
   left: 0;
 }
+
+rect.bar:hover{
+  stroke: aqua;
+  stroke-width: 2px;
+}
