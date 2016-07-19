@@ -2,6 +2,7 @@
 <meta charset="utf-8" />
 <style>
     .axis {
+      z-index: 9999999;
       font: 10px sans-serif;
     }
     .axis path,
@@ -15,13 +16,49 @@
       fill-opacity: .125;
       shape-rendering: crispEdges;
     }
+    .d3-tip {
+      line-height: 1;
+      font-weight: bold;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 2px;
+    }
+
+    /* Creates a small triangle extender for the tooltip */
+    .d3-tip:after {
+      box-sizing: border-box;
+      display: inline;
+      font-size: 10px;
+      width: 100%;
+      line-height: 1;
+      color: rgba(0, 0, 0, 0.8);
+      content: "\25BC";
+      position: absolute;
+      text-align: center;
+    }
+
+    /* Style northward tooltips differently */
+    .d3-tip.n:after {
+      margin: -1px 0 0 0;
+      top: 100%;
+      left: 0;
+    }
 </style>
 <body>
 <script src="d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script>
 
+    var tip = d3.tip()
+      .attr('class', 'd3-tip')
+      .offset([-10, 0])
+      .html(function(d) {
+        return "<strong>RFC:</strong> <span style='color:red'>"+ d.name +"</span>";
+    })
+
     // sizing information, including margins so there is space for labels, etc
-    var margin =  { top: 20, right: 20, bottom: 100, left: 200 },
+    var margin =  { top: 20, right: 0, bottom: 100, left: 20 },
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom,
         marginOverview = { top: 430, right: margin.right, bottom: 20,  left: margin.left },
@@ -67,6 +104,8 @@
                         .attr("class", "overview")
                         .attr("transform", "translate(" + marginOverview.left + "," + marginOverview.top + ")");
 
+    svg.call(tip);
+
     // brush tool to let us zoom and pan using the overview chart
     var brush = d3.svg.brush()
                         .x(xOverview)
@@ -102,7 +141,7 @@
 
         // draw the bars
         main.append("g")
-                .attr("class", "bars")
+            .attr("class", "bars")
             // a group for each stack of bars, positioned in the correct x position
             .selectAll(".bar.stack")
             .data(dataFromSource(data))
@@ -118,7 +157,9 @@
                 .attr("width", 6)
                 .attr("y", function(d) { return y(d.y1) })
                 .attr("height", function(d) { return dateDiff(d.name, d.y0, d.y1, y)})
-                .style("fill", function(d) { return d.color });
+                .style("fill", function(d) { return d.color })
+            .on('mouseover', tip.show)
+            .on('mouseout', tip.hide)
 
         overview.append("g")
                     .attr("class", "bars")
@@ -168,7 +209,7 @@
                 rfcs.push({
                     id: keys[key],
                     date: dateFromRFC(el),
-                    counts: countsCalculator(key, el, data)
+                    counts: countsCalculator(keys[key], el, data)
                 });
             }
         }
@@ -177,7 +218,11 @@
 
     function dateDiff(id, d1, d2, yScale){
         var result =  yScale(d1) - yScale(d2);
-        if (result<0) { console.log(id); }
+        if (result<0) {
+            console.log(id);
+            console.log(d1);
+            console.log(d2);
+        }
         return result;
     }
 
@@ -185,11 +230,21 @@
         var last_count = { name: key, y0: dateFromRFC(el), y1: todayDate(), color: "8BEE97" }
         var counts = [ last_count ];
         if (el.obsoleted_by != null) {
+            if (key == "849"){console.log(el)}
             var countsLength = el.obsoleted_by.length;
             var colorScale = createColorScale(countsLength+1);
             last_count.color = colorScale[0];
+            var sortedObsoleted = el.obsoleted_by.sort(function(x,y){
+                var rfc1 =  x.replace("RFC", "");
+                var rfc2 =  y.replace("RFC", "");
+                var new_el1 = data[rfc1];
+                var new_el2 = data[rfc2];
+                var new_date1 = dateFromRFC(new_el1);
+                var new_date2 = dateFromRFC(new_el2);
+                return new_date1 > new_date2
+            })
             for (var i = 0; i < countsLength; i++) {
-                var obs =  el.obsoleted_by[i].replace("RFC", "");
+                var obs =  sortedObsoleted[i].replace("RFC", "");
                 var new_el = data[obs];
                 var new_date = dateFromRFC(new_el);
                 last_count.y1 = new_date;
