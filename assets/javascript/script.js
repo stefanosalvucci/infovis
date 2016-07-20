@@ -53,8 +53,8 @@ svg.call(tip);
 
 // brush tool to let us zoom and pan using the overview chart
 var brush = d3.svg.brush()
-                    .x(xOverview)
-                    .on("brush", brushed);
+                  .x(xOverview)
+                  .on("brush", brushed);
 
 // setup complete, let's get some data!
 d3.json("source/rfc.json", function(error, data) {
@@ -181,14 +181,27 @@ function dateDiff(id, d1, d2, yScale){
     return result;
 }
 
+function deleteDuplicated(array) {
+    var a = array.concat();
+    for(var i=0; i<a.length; ++i) {
+        for(var j=i+1; j<a.length; ++j) {
+            if(a[i] === a[j])
+                a.splice(j--, 1);
+        }
+    }
+
+    return a;
+}
+
 function countsCalculator(key, el, data){
     var last_count = { name: key, y0: dateFromRFC(el), y1: maxRfcReleaseDate, color: "008125", title: titleFromRFC(el) }
     var counts = [ last_count ];
     if (el.obsoleted_by != null) {
-        var countsLength = el.obsoleted_by.length;
+        var obsoleted = deleteDuplicated(retrieveObsoletedRFC(el.obsoleted_by, data));
+        var countsLength = obsoleted.length;
         var colorScale = createColorScale(countsLength+1);
         last_count.color = colorScale[0];
-        var sortedObsoleted = el.obsoleted_by.sort(function(x,y){
+        var sortedObsoleted = obsoleted.sort(function(x,y){
             var rfc1 =  x.replace("RFC", "");
             var rfc2 =  y.replace("RFC", "");
             var new_el1 = data[rfc1];
@@ -207,6 +220,21 @@ function countsCalculator(key, el, data){
         }
     }
     return counts;
+}
+
+function retrieveObsoletedRFC(node, data){
+    var countsLength = node.length;
+    var obsoleted = [];
+    for (var i = 0; i < countsLength; i++) {
+        var rfc =  node[i].replace("RFC", "");
+        var new_el = data[rfc];
+        if (rfc.obsoleted_by == null){
+            obsoleted = obsoleted.concat(rfc);
+        }else{
+            obsoleted = obsoleted.concat(retrieveObsoletedRFC(new_el.obsoleted_by, data));
+        }
+    }
+    return obsoleted;
 }
 
 function titleFromRFC(el){
