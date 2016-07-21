@@ -63,9 +63,8 @@ d3.json("source/rfc.json", function(error, data) {
 
     // data ranges for the x and y axes
     x.domain(d3.extent(Object.keys(data), function(el){return parseInt(el)}));
-
     y.domain(d3.extent(datesFromSource(dataFromSource(data))));
-    // y.domain([parseDate("1/1/1950"), maxRfcReleaseDate]);
+
     xOverview.domain(x.domain());
     yOverview.domain(y.domain());
 
@@ -125,12 +124,8 @@ d3.json("source/rfc.json", function(error, data) {
             .attr("class", "x brush")
             .call(brush)
             .selectAll("rect")
-              // -6 is magic number to offset positions for styling/interaction to feel right
               .attr("y", -6)
-              // need to manually set the height because the brush has
-              // no y scale, i.e. we should see the extent being marked
-              // over the full height of the overview chart
-              .attr("height", heightOverview + 7);  // +7 is magic number for styling
+              .attr("height", heightOverview + 7);
 
 });
 
@@ -198,23 +193,36 @@ function countsCalculator(key, el, data){
     var last_count = { name: key, y0: dateFromRFC(el), y1: maxRfcReleaseDate, color: "008125", title: titleFromRFC(el), status: statusFromRFC(el) }
     var counts = [ last_count ];
     if (el.obsoleted_by != null) {
-        var obsoleted = deleteDuplicated(retrieveObsoletedRFC(el.obsoleted_by, data));
+        counts = [];
+        var obsoleted = deleteDuplicated(retrieveObsoletedRFC(el.obsoleted_by.concat('RFC' + key), data));
         var countsLength = obsoleted.length;
+
         var colorScale = createColorScale(countsLength+1);
         last_count.color = colorScale[0];
-        var sortedObsoleted = obsoleted.sort(function(x,y){
-            var rfc1 =  x.replace("RFC", "");
-            var rfc2 =  y.replace("RFC", "");
+        obsoleted.sort(function(rfc1,rfc2){
             var new_el1 = data[rfc1];
             var new_el2 = data[rfc2];
             var new_date1 = dateFromRFC(new_el1);
             var new_date2 = dateFromRFC(new_el2);
-            return new_date1 > new_date2
+            return y(new_date2) - y(new_date1)
         })
-        for (var i = 0; i < countsLength; i++) {
-            var obs =  sortedObsoleted[i].replace("RFC", "");
-            var new_el = data[obs];
-            var new_date = dateFromRFC(new_el);
+
+        var obs =  obsoleted[0].replace("RFC", "");
+        var new_el = data[obs];
+        var new_date = dateFromRFC(new_el);
+
+        last_count = {  name: obsoleted[0].replace("RFC", ""),
+                                y0: new_date,
+                                y1: maxRfcReleaseDate,
+                                color: "FF0000",
+                                title: titleFromRFC(new_el),
+                                status: statusFromRFC(new_el) }
+        counts = [ last_count ];
+
+        for (var i = 1; i < countsLength; i++) {
+            obs =  obsoleted[i].replace("RFC", "");
+            new_el = data[obs];
+            new_date = dateFromRFC(new_el);
             last_count.y1 = new_date;
             last_count = { name: obs, y0: new_date, y1: maxRfcReleaseDate, color: colorScale[i+1], title: titleFromRFC(new_el), status: statusFromRFC(new_el)};
             counts.push(last_count);
@@ -248,36 +256,18 @@ function statusFromRFC(el){
 }
 
 function createColorScale(length){
-    color = ["FF0718"]; //red
-    if (length==3){
-        color.push("FDFC56");
-    }
-    if (length==4) {
-        color.push("FFD248");
-        color.push("CEE64C");
-    }
-    if (length==5) {
-        color.push("FF8931");
-        color.push("FDFC56");
-        color.push("A6D345");
-    }
-    if (length==6) {
-        color.push("BBDD49");
-        color.push("EEF553");
-        color.push("FFE84F");
-        color.push("FFCA45");
-    }
-    if (length==7) {
-        color.push("FFAE3C");
-        color.push("FFDB4B");
-        color.push("FDFC56");
-        color.push("E1F050");
-        color.push("ABD646");
+    COLOURS = ['FF0000', 'FF1000', 'FF2000', 'FF3000', 'FF4000', 'FF5000', 'FF6000', 'FF7000', 'FF8000', 'FF9000', 'FFA000', 'FFB000', 'FFC000', 'FFD000', 'FFE000', 'FFF000', 'FFFF00', 'F0FF00', 'E0FF00', 'D0FF00', 'C0FF00', 'B0FF00', 'A0FF00', '90FF00', '80FF00', '70FF00', '60FF00', '50FF00', '40FF00', '30FF00', '25FF00', '20FF00', '15FF00']
+
+    color = [];
+    for (var i = 0; i < length - 1 ; i++) {
+        color.push(COLOURS[parseInt(34/length) * i]);
     }
     color.push("008125"); //green
 
     return color;
 }
+
+
 
 // zooming/panning behaviour for overview chart
 function brushed() {
