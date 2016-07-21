@@ -226,12 +226,13 @@ function retrieveObsoletedRFC(node, data){
     var countsLength = node.length;
     var obsoleted = [];
     for (var i = 0; i < countsLength; i++) {
-        var rfc =  node[i].replace("RFC", "");
-        var new_el = data[rfc];
-        if (rfc.obsoleted_by == null){
+        if (node[i].startsWith('RFC')){
+            var rfc =  node[i].replace("RFC", "");
+            var new_el = data[rfc];
             obsoleted = obsoleted.concat(rfc);
-        }else{
-            obsoleted = obsoleted.concat(retrieveObsoletedRFC(new_el.obsoleted_by, data));
+            if (new_el.obsoleted_by != null){
+                obsoleted = obsoleted.concat(retrieveObsoletedRFC(new_el.obsoleted_by, data));
+            }
         }
     }
     return obsoleted;
