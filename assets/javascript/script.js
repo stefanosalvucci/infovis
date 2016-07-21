@@ -91,7 +91,8 @@ d3.json("source/rfc.json", function(error, data) {
                 .on('mouseover', tip.show)
                 .on('mouseout', tip.hide)
                 .on('click', function(d){
-                  $('#modal-inner-html').html('<a target="_blank" href="https://tools.ietf.org/html/rfc' + d.name + '">' + d.title + '</a>');
+                    $('#myModalLabel').html('<h1>RFC ' + d.name + ' details</h1>')
+                    $('#modal-inner-html').html('<h2><a target="_blank" href="https://tools.ietf.org/html/rfc' + d.name + '">' + d.title + '</a></h2><br> <h3>Release date: ' + d.y0.getMonth() + '/' + d.y0.getFullYear() + '</h3><h3>Status: ' + d.status + '</h3>');
                   $('#rfc-details').modal('show');
                 })
 
@@ -194,7 +195,7 @@ function deleteDuplicated(array) {
 }
 
 function countsCalculator(key, el, data){
-    var last_count = { name: key, y0: dateFromRFC(el), y1: maxRfcReleaseDate, color: "008125", title: titleFromRFC(el) }
+    var last_count = { name: key, y0: dateFromRFC(el), y1: maxRfcReleaseDate, color: "008125", title: titleFromRFC(el), status: statusFromRFC(el) }
     var counts = [ last_count ];
     if (el.obsoleted_by != null) {
         var obsoleted = deleteDuplicated(retrieveObsoletedRFC(el.obsoleted_by, data));
@@ -215,7 +216,7 @@ function countsCalculator(key, el, data){
             var new_el = data[obs];
             var new_date = dateFromRFC(new_el);
             last_count.y1 = new_date;
-            last_count = { name: obs, y0: new_date, y1: maxRfcReleaseDate, color: colorScale[i+1], title: titleFromRFC(new_el)};
+            last_count = { name: obs, y0: new_date, y1: maxRfcReleaseDate, color: colorScale[i+1], title: titleFromRFC(new_el), status: statusFromRFC(new_el)};
             counts.push(last_count);
         }
     }
@@ -240,6 +241,10 @@ function retrieveObsoletedRFC(node, data){
 
 function titleFromRFC(el){
     return el['title'];
+}
+
+function statusFromRFC(el){
+    return el['status'];
 }
 
 function createColorScale(length){
