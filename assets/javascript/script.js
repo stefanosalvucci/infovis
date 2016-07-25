@@ -6,7 +6,7 @@ var tip = d3.tip()
     })
 
 // sizing information, including margins so there is space for labels, etc
-var margin =  { top: 100, right: 0, bottom: 250, left: 40 },
+var margin =  { top: 10, right: 0, bottom: 250, left: 40 },
     width = 1260 - margin.left - margin.right,
     height = 800 - margin.top - margin.bottom,
     marginOverview = { top: 570, right: margin.right, bottom: 20,  left: margin.left },
@@ -90,8 +90,8 @@ d3.json("source/rfc.json", function(error, data) {
                 .on('mouseover', tip.show)
                 .on('mouseout', tip.hide)
                 .on('click', function(d){
-                    $('#myModalLabel').html('<h1>RFC ' + d.name + ' details</h1>')
-                    $('#modal-inner-html').html('<h2><a target="_blank" href="https://tools.ietf.org/html/rfc' + d.name + '">' + d.title + '</a></h2><br> <h3>Release date: ' + d.y0.getMonth() + '/' + d.y0.getFullYear() + '</h3><h3>Status: ' + d.status + '</h3>');
+                    $('#myModalLabel').html("<h1>RFC <b style='color:#"+d.color+"'>" + d.name + "</b> details</h1>")
+                    $('#modal-inner-html').html('<h2><a target="_blank" href="https://tools.ietf.org/html/rfc' + d.name + '">' + d.title + '</a></h2><br> <h3>Release date: ' + (d.y0.getMonth()+1) + '/' + d.y0.getFullYear() + '</h3><h3>Status: ' + d.status + '</h3>');
                   $('#rfc-details').modal('show');
                 })
 
