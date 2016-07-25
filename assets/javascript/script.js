@@ -60,10 +60,10 @@ var brush = d3.svg.brush()
 d3.json("source/rfc.json", function(error, data) {
 
     maxRfcReleaseDate = maxDate(data);
-
+    var rfcs = dataFromSource(data);
     // data ranges for the x and y axes
     x.domain(d3.extent(Object.keys(data), function(el){return parseInt(el)}));
-    y.domain(d3.extent(datesFromSource(dataFromSource(data))));
+    y.domain(d3.extent(datesFromSource(rfcs)));
 
     xOverview.domain(x.domain());
     yOverview.domain(y.domain());
@@ -73,7 +73,7 @@ d3.json("source/rfc.json", function(error, data) {
             .attr("class", "bars")
             // a group for each stack of bars, positioned in the correct x position
             .selectAll(".bar.stack")
-              .data(dataFromSource(data))
+              .data(rfcs)
               .enter().append("g")
                 .attr("class", "bar stack")
                 .attr("id", function(el) {return el.id})
@@ -91,7 +91,7 @@ d3.json("source/rfc.json", function(error, data) {
                 .on('mouseout', tip.hide)
                 .on('click', function(d){
                     $('#myModalLabel').html("<h1>RFC <b style='color:#"+d.color+"'>" + d.name + "</b> details</h1>")
-                    $('#modal-inner-html').html('<h2><a target="_blank" href="https://tools.ietf.org/html/rfc' + d.name + '">' + d.title + '</a></h2><br> <h3>Release date: ' + (d.y0.getMonth()+1) + '/' + d.y0.getFullYear() + '</h3><h3>Status: ' + d.status + '</h3>');
+                    $('#modal-inner-html').html(modalHTML(d));
                   $('#rfc-details').modal('show');
                 })
 
@@ -157,16 +157,39 @@ function datesFromSource(data){
 }
 
 function dataFromSource(data){
-    keys = Object.keys(data);
+    var keys = Object.keys(data);
     var rfcs = [];
-    for (key in keys){
-        el = data[keys[key]];
+    for (var key in keys){
+        var rfcNumber = keys[key];
+        var el = data[rfcNumber];
         if (el != "Not Issued" && el.obsolets == null) {
+            var countsCalculated = countsCalculator(rfcNumber, el, data);
             rfcs.push({
-                id: keys[key],
+                id: rfcNumber,
                 date: dateFromRFC(el),
-                counts: countsCalculator(keys[key], el, data)
+                counts: countsCalculated
             });
+            // for every counts add a grey bar
+            if (countsCalculated.length > 1) {
+                for (var i = 1; i < countsCalculated.length; i++) {
+                    var count = countsCalculated[i];
+                    rfcs.push({
+                        id: count['name'],
+                        date: count['y0'],
+                        counts: [
+                            {
+                                name: count['name'],
+                                y0: count['y0'],
+                                y1: count['y1'],
+                                color: "939393",
+                                title: titleFromRFC(el),
+                                status: statusFromRFC(el),
+                                lookAt: rfcNumber
+                            }
+                        ]
+                    });
+                }
+            }
         }
     }
     return rfcs;
@@ -190,7 +213,13 @@ function deleteDuplicated(array) {
 }
 
 function countsCalculator(key, el, data){
-    var last_count = { name: key, y0: dateFromRFC(el), y1: maxRfcReleaseDate, color: "008125", title: titleFromRFC(el), status: statusFromRFC(el) }
+    var last_count = {  name: key,
+                        y0: dateFromRFC(el),
+                        y1: maxRfcReleaseDate,
+                        color: "008125",
+                        title: titleFromRFC(el),
+                        status: statusFromRFC(el)
+                    }
     var counts = [ last_count ];
     if (el.obsoleted_by != null) {
         counts = [];
@@ -212,11 +241,12 @@ function countsCalculator(key, el, data){
         var new_date = dateFromRFC(new_el);
 
         last_count = {  name: obsoleted[0].replace("RFC", ""),
-                                y0: new_date,
-                                y1: maxRfcReleaseDate,
-                                color: "FF0000",
-                                title: titleFromRFC(new_el),
-                                status: statusFromRFC(new_el) }
+                        y0: new_date,
+                        y1: maxRfcReleaseDate,
+                        color: "FF0000",
+                        title: titleFromRFC(new_el),
+                        status: statusFromRFC(new_el)
+                    }
         counts = [ last_count ];
 
         for (var i = 1; i < countsLength; i++) {
@@ -224,7 +254,13 @@ function countsCalculator(key, el, data){
             new_el = data[obs];
             new_date = dateFromRFC(new_el);
             last_count.y1 = new_date;
-            last_count = { name: obs, y0: new_date, y1: maxRfcReleaseDate, color: colorScale[i+1], title: titleFromRFC(new_el), status: statusFromRFC(new_el)};
+            last_count = {  name: obs,
+                            y0: new_date,
+                            y1: maxRfcReleaseDate,
+                            color: colorScale[i+1],
+                            title: titleFromRFC(new_el),
+                            status: statusFromRFC(new_el)
+                        };
             counts.push(last_count);
         }
     }
@@ -267,6 +303,15 @@ function createColorScale(length){
     return color;
 }
 
+function modalHTML(d){
+    var html =   '<h2><a target="_blank" href="https://tools.ietf.org/html/rfc' + d.name + '">' + d.title + '</a></h2> <br>'
+                +'<h3>Release date: ' + (d.y0.getMonth()+1) + '/' + d.y0.getFullYear() + '</h3><br>'
+                +'<h3>Status: ' + d.status + '</h3><br>';
+    if (d.lookAt) {
+        html += '<h3>Look at: RFC' + d.lookAt + '</h3><br>';
+    }
+    return html;
+}
 
 
 // zooming/panning behaviour for overview chart
