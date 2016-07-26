@@ -4821,6 +4821,19 @@
     },
     "title": "The Early Session Disposition Type for the Session Initiation Protocol (SIP). G. Camarillo"
   },
+  "7936": {
+    "status": "PROPOSED STANDARD",
+    "doi": "10.17487/RFC7936",
+    "issue_data": {
+      "year": "2016",
+      "month": "July"
+    },
+    "format": "TXT=4873 bytes",
+    "title": "Clarifying Registry Procedures for the WebSocket Subprotocol Name Registry. T. Hardie",
+    "updates": [
+      "RFC6455"
+    ]
+  },
   "3029": {
     "status": "EXPERIMENTAL",
     "format": "TXT=107347 bytes",
@@ -6754,9 +6767,7 @@
     },
     "format": "TXT=11239 bytes",
     "title": "Address mappings. J. Postel",
-    "obsolets": [
-      "IEN115"
-    ]
+    "obsolets": []
   },
   "0797": {
     "status": "UNKNOWN",
@@ -7704,6 +7715,17 @@
       "month": "January"
     },
     "title": "Private Session Initiation Protocol (SIP) Extensions for Media Authorization. W. Marshall, Ed."
+  },
+  "7934": {
+    "also_fyi": "BCP0204",
+    "status": "BEST CURRENT PRACTICE",
+    "doi": "10.17487/RFC7934",
+    "issue_data": {
+      "year": "2016",
+      "month": "July"
+    },
+    "format": "TXT=37124 bytes",
+    "title": "Host Address Availability Recommendations. L. Colitti, V. Cerf, S. Cheshire, D. Schinazi"
   },
   "1588": {
     "status": "INFORMATIONAL",
@@ -14021,12 +14043,15 @@
   },
   "6455": {
     "status": "PROPOSED STANDARD",
-    "format": "TXT=162067 bytes",
     "doi": "10.17487/RFC6455",
+    "updated_by": [
+      "RFC7936"
+    ],
     "issue_data": {
       "year": "2011",
       "month": "December"
     },
+    "format": "TXT=162067 bytes",
     "title": "The WebSocket Protocol. I. Fette, A. Melnikov"
   },
   "6454": {
@@ -21762,9 +21787,7 @@
     },
     "format": "TXT=386909 bytes",
     "title": "Experimental Internet Stream Protocol: Version 2 (ST-II). C. Topolcic",
-    "obsolets": [
-      "IEN119"
-    ],
+    "obsolets": [],
     "obsoleted_by": [
       "RFC1819"
     ]
@@ -23812,9 +23835,7 @@
       "RFC0170",
       "RFC0160"
     ],
-    "obsoleted_by": [
-      "NIC7724"
-    ]
+    "obsoleted_by": []
   },
   "2386": {
     "status": "INFORMATIONAL",
@@ -23997,9 +24018,7 @@
     },
     "format": "TXT=10859 bytes",
     "title": "Telnet Echo Option. J. Postel, J. Reynolds",
-    "obsolets": [
-      "NIC15390"
-    ]
+    "obsolets": []
   },
   "0856": {
     "also_fyi": "STD0027",
@@ -24011,9 +24030,7 @@
     },
     "format": "TXT=8965 bytes",
     "title": "Telnet Binary Transmission. J. Postel, J. Reynolds",
-    "obsolets": [
-      "NIC15389"
-    ]
+    "obsolets": []
   },
   "0855": {
     "also_fyi": "STD0008",
@@ -24025,9 +24042,7 @@
     },
     "format": "TXT=6218 bytes",
     "title": "Telnet Option Specifications. J. Postel, J.K. Reynolds",
-    "obsolets": [
-      "NIC18640"
-    ]
+    "obsolets": []
   },
   "0854": {
     "also_fyi": "STD0008",
@@ -24070,9 +24085,7 @@
     },
     "format": "TXT=3712 bytes",
     "title": "Telnet Suppress Go Ahead Option. J. Postel, J. Reynolds",
-    "obsolets": [
-      "NIC15392"
-    ]
+    "obsolets": []
   },
   "1775": {
     "status": "INFORMATIONAL",
@@ -24240,9 +24253,7 @@
     },
     "format": "TXT=1371 bytes",
     "title": "Correction to BBN Report No. 1822 (NIC NO 7958). A.M. McKenzie",
-    "updates": [
-      "NIC7959"
-    ]
+    "updates": []
   },
   "5278": {
     "status": "PROPOSED STANDARD",
@@ -24891,8 +24902,7 @@
     "format": "TXT=266875 bytes",
     "title": "Internet Stream Protocol Version 2 (ST2) Protocol Specification - Version ST2+. L. Delgrossi, Ed., L. Berger, Ed.",
     "obsolets": [
-      "RFC1190",
-      "IEN119"
+      "RFC1190"
     ]
   },
   "0369": {
@@ -35749,10 +35759,7 @@
     },
     "format": "TXT=62620 bytes",
     "title": "DARPA Internet gateway. R.M. Hinden, A. Sheltzer",
-    "updates": [
-      "IEN109",
-      "IEN30"
-    ]
+    "updates": []
   },
   "0820": {
     "status": "HISTORIC",
@@ -48555,9 +48562,7 @@
     },
     "format": "TXT=5906 bytes",
     "title": "Pre-emption. V.G. Cerf",
-    "updates": [
-      "IEN125"
-    ]
+    "updates": []
   },
   "6198": {
     "status": "INFORMATIONAL",
@@ -53260,9 +53265,7 @@
     },
     "format": "TXT=81507 bytes",
     "title": "DoD standard Internet Protocol. J. Postel",
-    "obsolets": [
-      "IEN123"
-    ],
+    "obsolets": [],
     "obsoleted_by": [
       "RFC0791"
     ]
@@ -54028,9 +54031,7 @@
     },
     "format": "TXT=23522 bytes",
     "title": "TFTP Protocol (revision 2). K.R. Sollins",
-    "obsolets": [
-      "IEN133"
-    ],
+    "obsolets": [],
     "obsoleted_by": [
       "RFC1350"
     ]
@@ -60850,9 +60851,7 @@
     },
     "format": "TXT=12173 bytes",
     "title": "RFC brief list. Network Information Center. Stanford Research Institute",
-    "updates": [
-      "NIC6716"
-    ],
+    "updates": [],
     "obsoleted_by": [
       "RFC0200",
       "RFC0999"
@@ -60882,9 +60881,7 @@
   "0165": {
     "status": "UNKNOWN",
     "doi": "10.17487/RFC0165",
-    "updated_by": [
-      "NIC7101"
-    ],
+    "updated_by": [],
     "issue_data": {
       "year": "1971",
       "month": "May"
@@ -71415,9 +71412,7 @@
     },
     "format": "TXT=7881 bytes",
     "title": "Telnet Timing Mark Option. J. Postel, J. Reynolds",
-    "obsolets": [
-      "NIC16238"
-    ]
+    "obsolets": []
   },
   "0861": {
     "also_fyi": "STD0032",
@@ -71429,9 +71424,7 @@
     },
     "format": "TXT=3068 bytes",
     "title": "Telnet Extended Options: List Option. J. Postel, J. Reynolds",
-    "obsolets": [
-      "NIC16239"
-    ]
+    "obsolets": []
   },
   "0666": {
     "status": "UNKNOWN",
@@ -89929,6 +89922,16 @@
       "RFC4960"
     ]
   },
+  "7924": {
+    "status": "PROPOSED STANDARD",
+    "format": "TXT=35144 bytes",
+    "doi": "10.17487/RFC7924",
+    "issue_data": {
+      "year": "2016",
+      "month": "July"
+    },
+    "title": "Transport Layer Security (TLS) Cached Information Extension. S. Santesson, H. Tschofenig"
+  },
   "5494": {
     "status": "PROPOSED STANDARD",
     "doi": "10.17487/RFC5494",
@@ -89954,6 +89957,16 @@
       "RFC4361",
       "RFC4701"
     ]
+  },
+  "7925": {
+    "status": "PROPOSED STANDARD",
+    "format": "TXT=141911 bytes",
+    "doi": "10.17487/RFC7925",
+    "issue_data": {
+      "year": "2016",
+      "month": "July"
+    },
+    "title": "Transport Layer Security (TLS) / Datagram Transport Layer Security (DTLS) Profiles for the Internet of Things. H. Tschofenig, Ed., T. Fossati"
   },
   "5495": {
     "status": "INFORMATIONAL",
